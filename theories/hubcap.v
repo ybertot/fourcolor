@@ -402,7 +402,7 @@ have db2_inc w i (v_i := nth 0 v i) (w' := incr_nth w i) :
   sum_db2 w' = (b (iter i face x1) (v_i == 1)%N.+1 + sum_db2 w)%R.
 - case/vb_inc; set w_i := nth 0 w i => lt_wvi _ ltin /(leq_trans lt_wvi)ub_wi.
   have ltix1: i < arity x1 by rewrite nFx1.
-  rewrite 2![sum_db2 _](bigD1 _ (fconnect_iter _ i _)) addrA /= -mulrnDr.
+  rewrite 2![sum_db2 _](bigD1 _ (fconnect_iter _ i _)) addrA -mulrnDr /=.
   congr (_ *+ _ + _)%R; first rewrite findex_iter // nth_incr_nth eqxx /= -/w_i.
     by do [rewrite -/v_i; case: eqP w_i => [->|_] [|[|?]]] in lt_wvi ub_wi *.
   apply: eq_bigr => y /andP[x1Fy x1i'y]; congr (_ *+ _)%R; rewrite nth_incr_nth.
@@ -413,7 +413,7 @@ elim: hc {b0}(_ - 1)%R hc_v hc_p => /= [|i b1 hc IHhc|j i b1 hc IHhc] b0.
 - case/andP=> /eqP-Dvi v_hc /andP[p_b1 p_hc] vb_hci.
   have /vb_inc[_ vb_hc] := vb_hci.
   have [ltin | leni] := ltnP i nhub; last by rewrite nth_default ?Ev in Dvi.
-  rewrite {}db2_inc ?Dvi {vb_hci}//= -ler_subr_addl -opprD addrC.
+  rewrite {}db2_inc ?Dvi {vb_hci}// [_.+1]/= -ler_subr_addl -opprD addrC.
   apply: {IHhc vb_hc v_hc p_hc}(le_trans (IHhc _ v_hc p_hc vb_hc)).
   rewrite ler_opp2 ler_add2r ler_pmuln2r //.
   by apply: check_dbound2P p_b1; rewrite ?arity_iter_face ?fit_hubcap_rot.
@@ -422,7 +422,7 @@ have /vb_inc[_ vb_hcj] := vb_hcij; have /vb_inc[vj_gt vb_hc] := vb_hcj.
 have{vj_gt} vj_gt0: 0 < vj by apply: leq_trans vj_gt.
 have [ltin | ?] := ltnP i nhub; last by rewrite Dvi nth_default ?Ev in vj_gt0.
 have [ltjn | ?] := ltnP j nhub; last by rewrite [vj]nth_default ?Ev in vj_gt0.
-rewrite !{}db2_inc -?Dvi {vb_hcij vb_hcj}//= addrA -ler_subr_addl -opprD -/vj.
+rewrite !{}db2_inc -?Dvi {vb_hcij vb_hcj}// addrA -ler_subr_addl -opprD -/vj.
 apply: {IHhc v_hc p_hc vb_hc}(le_trans (IHhc _ v_hc p_hc vb_hc)).
 rewrite ler_opp2 addrC ler_add2r -mulrnDl ler_pmuln2r //.
 rewrite addrC -(iter_hub_subn i ltjn) //.
